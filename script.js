@@ -1,7 +1,6 @@
 const numbtn = document.querySelector(".num-buttons");
 const opbtn = document.querySelector(".operator-buttons");
 const displayBox = document.querySelector("#screen");
-const resultBox = document.querySelector('#results');
 
 let add = (num1 , num2 ) => num1 + num2; 
 let subtract = (num1 , num2) => num1 - num2;
@@ -9,10 +8,7 @@ let multiply = (num1 , num2) => num1 *num2;
 let divide = (num1 , num2) => +(num1/num2).toFixed(2);
 
 let display = [];
-let clearDisplay = () => {
-    display = [];
-    displayBox.textContent = "";
-};
+
 let currentNum = () => +display.join('');
 
 numbtn.addEventListener('click' , function(e) {
@@ -47,12 +43,16 @@ numbtn.addEventListener('click' , function(e) {
         case 'nine':
             display.push('9');
             break;
+        case 'point':
+            display.push('.')
+            break;
+        case 'clear':
+            display = [];
+            break;
         default:
-            
         
     }
-    resultBox.textContent = "";
-    displayBox.textContent = currentNum();
+    displayBox.textContent = display.join('');
 });
 
 let operation = {};
@@ -60,32 +60,61 @@ let clearOp = () => operation = {};
 
 opbtn.addEventListener('click' , function(e) {
     if (e.target.id == "equals") {
+        console.log('equals');
         switch (operation.operator) {
             case 'add':
-                resultBox.textContent = add(operation.firstNum , currentNum());
-                clearDisplay();
+                displayBox.textContent = add(operation.firstNum , currentNum());
+                display =[];
                 clearOp();
                 break;
             case 'sub':
-                resultBox.textContent = subtract(operation.firstNum , currentNum());
-                clearDisplay();
+                displayBox.textContent = subtract(operation.firstNum , currentNum());
+                display =[];
                 clearOp();
                 break;
             case 'multiply':
-                resultBox.textContent = multiply(operation.firstNum , currentNum());
-                clearDisplay();
+                displayBox.textContent = multiply(operation.firstNum , currentNum());
+                display =[];
                 clearOp();
                 break;
             case 'divide':
-                resultBox.textContent = divide(operation.firstNum , currentNum());
-                clearDisplay();
+                displayBox.textContent = divide(operation.firstNum , currentNum());
+                display =[];
                 clearOp();
                 break;
         }
     }
-    else {
+    else if (Object.hasOwn(operation , 'firstNum')) {
+        console.log('second');
+        console.log(operation);
+        let secondNum = currentNum();
+        switch (operation.operator) {
+            case 'add':
+                operation.firstNum = add(operation.firstNum , currentNum());
+                operation.operator = e.target.id
+                display = [];
+                break;
+            case 'sub':
+                operation.firstNum = subtract(operation.firstNum , currentNum());
+                operation.operator = e.target.id
+                display = [];
+                break;
+            case 'multiply':
+                operation.firstNum = multiply(operation.firstNum , currentNum());
+                operation.operator = e.target.id
+                display = [];
+                break;
+            case 'divide':
+                operation.firstNum = divide(operation.firstNum , currentNum());
+                operation.operator = e.target.id
+                display = [];
+                break;
+        }
+        console.log(operation);
+    }
+    else {  console.log('third');
             operation.firstNum = +display.join('');
             operation.operator = e.target.id
-            clearDisplay();
+            display = [];
     }
 })
